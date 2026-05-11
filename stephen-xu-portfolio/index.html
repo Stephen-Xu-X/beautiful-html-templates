@@ -1,0 +1,1191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stephen Xu · 许烁锋 — Personal Portfolio 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,300;1,8..60,400;1,8..60,600;1,8..60,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=IBM+Plex+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+/* ── TOKENS ─────────────────────────────────────────────────────────── */
+:root {
+  --c-bg:           #1c2644;
+  --c-bg-alt:       #232f55;
+  --c-bg-light:     #f0ece3;
+  --c-bg-light-alt: #e6e0d4;
+  --c-fg:           #e2dcd0;
+  --c-fg-2:         #8a96a8;
+  --c-fg-3:         #4e5a6e;
+  --c-fg-light:     #1a2030;
+  --c-fg-light-2:   #5a6270;
+  --c-fg-light-3:   #9aa0a8;
+  --c-accent:       #c8a870;
+  --c-border:       #2e3d5c;
+  --c-border-light: #cac4b4;
+  --f-display:      "Source Serif 4","Noto Serif SC",Georgia,serif;
+  --f-heading:      "Source Serif 4","Noto Serif SC",Georgia,serif;
+  --f-body:         "DM Sans","Noto Sans SC",system-ui,sans-serif;
+  --f-mono:         "IBM Plex Mono",monospace;
+  --sz-display:     9.5vw;
+  --sz-h1:          5.2vw;
+  --sz-h2:          3vw;
+  --sz-h3:          1.9vw;
+  --sz-lead:        1.4vw;
+  --sz-body:        1.05vw;
+  --sz-caption:     0.82vw;
+  --sz-label:       0.7vw;
+  --pad-x:          7.5vw;
+  --pad-y:          5.5vh;
+  --gap-lg:         4vh;
+  --gap-md:         2.5vh;
+  --gap-sm:         1.2vh;
+  --ease-slide:     cubic-bezier(0.77,0,0.175,1);
+  --dur-slide:      0.85s;
+  --ease-enter:     cubic-bezier(0.16,1,0.3,1);
+  --dur-enter:      0.65s;
+}
+
+/* ── ENGINE ─────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--c-bg);-webkit-font-smoothing:antialiased;}
+#deck{display:flex;height:100vh;transition:transform var(--dur-slide) var(--ease-slide);will-change:transform;}
+.slide{flex:0 0 100vw;width:100vw;height:100vh;position:relative;padding:var(--pad-y) var(--pad-x);display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;}
+.slide-body{min-height:0;height:100%;display:flex;flex-direction:column;}
+.slide.dark{background:var(--c-bg);color:var(--c-fg);}
+.slide.light{background:var(--c-bg-light);color:var(--c-fg-light);}
+.slide.dark::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;z-index:0;}
+.slide.dark>*{position:relative;z-index:1;}
+
+/* animations */
+[data-anim]{opacity:0;}
+.slide.is-active [data-anim]{animation-duration:var(--dur-enter);animation-timing-function:var(--ease-enter);animation-fill-mode:forwards;}
+.slide.is-active [data-anim="fade-up"]{animation-name:kFadeUp;}
+.slide.is-active [data-anim="fade-in"]{animation-name:kFadeIn;}
+.slide.is-active [data-anim="reveal-right"]{animation-name:kRevealRight;}
+[data-delay="0"]{animation-delay:0s;}[data-delay="1"]{animation-delay:.08s;}[data-delay="2"]{animation-delay:.18s;}
+[data-delay="3"]{animation-delay:.3s;}[data-delay="4"]{animation-delay:.44s;}[data-delay="5"]{animation-delay:.6s;}[data-delay="6"]{animation-delay:.78s;}
+@keyframes kFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes kRevealRight{from{clip-path:inset(0 100% 0 0);opacity:1}to{clip-path:inset(0 0% 0 0);opacity:1}}
+
+/* nav */
+#nav-dots{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:100;}
+.nav-dot{width:5px;height:5px;border-radius:50%;border:none;background:rgba(255,255,255,.22);cursor:pointer;transition:background .3s,transform .3s;padding:0;}
+.nav-dot.is-active{background:rgba(255,255,255,.8);transform:scale(1.4);}
+#slide-counter{position:fixed;bottom:20px;right:28px;font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;color:rgba(255,255,255,.25);z-index:100;user-select:none;}
+
+/* ── TYPOGRAPHY ─────────────────────────────────────────────────────── */
+.display{font-family:var(--f-display);font-size:var(--sz-display);font-weight:700;line-height:.96;letter-spacing:-.02em;}
+.h1{font-family:var(--f-heading);font-size:var(--sz-h1);font-weight:600;line-height:1.08;letter-spacing:-.01em;}
+.h2{font-family:var(--f-heading);font-size:var(--sz-h2);font-weight:600;line-height:1.18;}
+.h3{font-family:var(--f-heading);font-size:var(--sz-h3);font-weight:500;line-height:1.3;}
+.lead{font-family:var(--f-body);font-size:var(--sz-lead);font-weight:400;line-height:1.58;}
+.body{font-family:var(--f-body);font-size:var(--sz-body);font-weight:400;line-height:1.65;}
+.label{font-family:var(--f-mono);font-size:var(--sz-label);font-weight:500;letter-spacing:.14em;text-transform:uppercase;}
+.display em,.h1 em,.h2 em,.h3 em{font-style:italic;color:var(--c-accent);}
+.lead em{font-style:italic;color:var(--c-accent);font-family:var(--f-heading);}
+.dark .muted{color:var(--c-fg-2);}
+.light .muted{color:var(--c-fg-light-2);}
+.accent{color:var(--c-accent);}
+
+/* ── CHROME ─────────────────────────────────────────────────────────── */
+.slide-chrome,.slide-foot{display:flex;justify-content:space-between;align-items:center;}
+.slide-chrome{padding-bottom:var(--gap-sm);border-bottom:1px solid var(--c-border);margin-bottom:var(--gap-md);}
+.slide-foot{padding-top:var(--gap-sm);border-top:1px solid var(--c-border);margin-top:var(--gap-md);}
+.light .slide-chrome,.light .slide-foot{border-color:var(--c-border-light);}
+.slide--cover .slide-chrome,.slide--cover .slide-foot,
+.slide--end .slide-chrome,.slide--end .slide-foot{display:none;}
+
+/* ── SHARED COMPONENTS ──────────────────────────────────────────────── */
+.rule{width:36px;height:1px;background:var(--c-accent);}
+.kicker{font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent);}
+.bullet-list{list-style:none;display:flex;flex-direction:column;gap:var(--gap-sm);}
+.bullet-list li{display:grid;grid-template-columns:1.2em 1fr;gap:.5em;font-family:var(--f-body);font-size:var(--sz-body);line-height:1.55;}
+.bullet-list li::before{content:"—";color:var(--c-accent);font-family:var(--f-mono);}
+.dark .bullet-list li{color:var(--c-fg-2);}
+.light .bullet-list li{color:var(--c-fg-light-2);}
+.bullet-list li em{font-style:italic;color:var(--c-accent);}
+
+/* ── COVER ──────────────────────────────────────────────────────────── */
+.slide--cover{display:flex;flex-direction:column;justify-content:flex-end;}
+.cover-body{display:flex;flex-direction:column;flex:1;justify-content:flex-end;gap:var(--gap-md);}
+.cover-meta{display:flex;justify-content:space-between;align-items:flex-end;margin-top:var(--gap-lg);padding-top:var(--gap-sm);border-top:1px solid var(--c-border);}
+
+/* ── PROFILE SPLIT ──────────────────────────────────────────────────── */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--pad-x)*.8);align-items:center;height:100%;width:100%;}
+.profile-left{display:flex;flex-direction:column;gap:var(--gap-md);padding-top:0;justify-content:center;}
+.profile-right{display:flex;flex-direction:column;gap:var(--gap-md);padding-top:0;border-left:1px solid var(--c-border);padding-left:calc(var(--pad-x)*.8);justify-content:center;}
+.light .profile-right{border-color:var(--c-border-light);}
+.comp-row{display:flex;flex-direction:column;gap:var(--gap-sm);}
+.comp-label{font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent);padding-bottom:var(--gap-sm);border-bottom:1px solid var(--c-border);}
+.light .comp-label{border-color:var(--c-border-light);}
+.comp-tags{display:flex;flex-wrap:wrap;gap:.4em;}
+.comp-tag{font-family:var(--f-body);font-size:var(--sz-body);color:var(--c-fg-2);padding:.2em .6em;border:1px solid var(--c-border);line-height:1.4;}
+.light .comp-tag{color:var(--c-fg-light-2);border-color:var(--c-border-light);}
+
+/* ── TIMELINE ───────────────────────────────────────────────────────── */
+.slide--vtimeline{grid-template-rows:auto auto 1fr auto;}
+.vt-hl{font-family:var(--f-heading);font-size:var(--sz-h2);font-weight:600;padding-bottom:var(--gap-md);border-bottom:1px solid var(--c-border);}
+.light .vt-hl{border-color:var(--c-border-light);}
+.vtimeline{display:grid;grid-template-columns:9em 1px 1fr;min-height:0;padding-top:var(--gap-md);}
+.vt-date{font-family:var(--f-mono);font-size:var(--sz-caption);letter-spacing:.08em;color:var(--c-fg-3);text-align:right;padding:0 1.5vw 3.2vh 0;line-height:1.4;}
+.light .vt-date{color:var(--c-fg-light-3);}
+.vt-spine{background:var(--c-border);position:relative;}
+.light .vt-spine{background:var(--c-border-light);}
+.vt-spine::before{content:"";position:absolute;top:.3em;left:-4px;width:9px;height:9px;border-radius:50%;background:var(--c-accent);}
+.vt-content{padding:0 0 3.2vh 1.5vw;}
+.vt-title{font-family:var(--f-heading);font-size:var(--sz-h3);font-weight:500;margin-bottom:.4vh;line-height:1.25;}
+.vt-sub{font-family:var(--f-mono);font-size:var(--sz-caption);letter-spacing:.06em;color:var(--c-accent);margin-bottom:.6vh;}
+.vt-body{font-family:var(--f-body);font-size:var(--sz-body);color:var(--c-fg-2);line-height:1.62;}
+.light .vt-body{color:var(--c-fg-light-2);}
+.vt-body em{font-style:italic;color:var(--c-accent);font-family:var(--f-heading);}
+
+/* ── STATS ──────────────────────────────────────────────────────────── */
+.slide--stats .slide-body{display:flex;flex-direction:column;justify-content:center;gap:var(--gap-lg);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
+.stat-card{display:flex;flex-direction:column;gap:var(--gap-sm);padding:var(--gap-md) var(--gap-md) var(--gap-md) 0;border-top:1px solid var(--c-border);}
+.light .stat-card{border-color:var(--c-border-light);}
+.stat-value{font-family:var(--f-display);font-size:5.5vw;font-weight:600;line-height:1;color:var(--c-accent);letter-spacing:-.02em;}
+.stat-label{font-family:var(--f-body);font-size:var(--sz-body);line-height:1.5;color:var(--c-fg-2);}
+.light .stat-label{color:var(--c-fg-light-2);}
+.stat-note{font-family:var(--f-mono);font-size:var(--sz-caption);letter-spacing:.05em;color:var(--c-fg-3);}
+.light .stat-note{color:var(--c-fg-light-3);}
+
+/* ── PROJECT PAGE ───────────────────────────────────────────────────── */
+.slide--project{grid-template-rows:auto 1fr auto;}
+.project-layout{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--pad-x)*.7);height:100%;align-items:start;}
+.project-left{display:flex;flex-direction:column;gap:var(--gap-md);}
+.project-num-big{font-family:var(--f-display);font-size:8vw;font-weight:700;line-height:1;color:var(--c-accent);letter-spacing:-.03em;font-style:italic;opacity:.18;position:absolute;top:var(--pad-y);right:var(--pad-x);}
+.project-tag{display:inline-block;font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent);border:1px solid var(--c-accent);padding:.3em .8em;line-height:1;align-self:flex-start;}
+.project-title-lg{font-family:var(--f-heading);font-size:var(--sz-h2);font-weight:600;line-height:1.15;}
+.project-title-lg em{font-style:italic;color:var(--c-accent);}
+.project-desc-lg{font-family:var(--f-body);font-size:var(--sz-body);line-height:1.72;color:var(--c-fg-2);}
+.light .project-desc-lg{color:var(--c-fg-light-2);}
+.project-result-bar{display:flex;flex-direction:column;gap:.5vh;margin-top:var(--gap-sm);padding-top:var(--gap-sm);border-top:1px solid var(--c-border);}
+.light .project-result-bar{border-color:var(--c-border-light);}
+.project-result-label{font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.1em;color:var(--c-fg-3);text-transform:uppercase;}
+.light .project-result-label{color:var(--c-fg-light-3);}
+.project-result-val{font-family:var(--f-heading);font-size:var(--sz-h3);font-weight:500;color:var(--c-accent);}
+
+/* right visual panel */
+.project-visual{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--gap-md);height:100%;border-left:1px solid var(--c-border);padding-left:calc(var(--pad-x)*.7);}
+.light .project-visual{border-color:var(--c-border-light);}
+
+/* workflow nodes */
+.wf-node{display:flex;flex-direction:column;align-items:center;gap:.5vh;}
+.wf-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wf-label{font-family:var(--f-mono);font-size:.6vw;letter-spacing:.08em;text-transform:uppercase;color:var(--c-fg-3);text-align:center;}
+.light .wf-label{color:var(--c-fg-light-3);}
+.wf-arrow{font-family:var(--f-mono);font-size:1vw;color:var(--c-border);display:flex;align-items:center;justify-content:center;padding:.2vh 0;}
+.light .wf-arrow{color:var(--c-border-light);}
+.wf-row{display:flex;align-items:center;gap:1.5vw;}
+.wf-connector{width:2vw;height:1px;background:var(--c-border);}
+.light .wf-connector{background:var(--c-border-light);}
+.wf-connector-arrow::after{content:"▶";font-size:.5vw;color:var(--c-accent);margin-left:.2em;}
+
+/* social icons grid */
+.social-icon-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-lg);}
+.si-card{display:flex;flex-direction:column;align-items:center;gap:var(--gap-sm);padding:var(--gap-md);border:1px solid var(--c-border);border-radius:4px;}
+.light .si-card{border-color:var(--c-border-light);}
+.si-icon{width:56px;height:56px;display:flex;align-items:center;justify-content:center;}
+.si-name{font-family:var(--f-mono);font-size:.65vw;letter-spacing:.1em;text-transform:uppercase;color:var(--c-fg-3);}
+.light .si-name{color:var(--c-fg-light-3);}
+.si-stat{font-family:var(--f-display);font-size:2.2vw;font-weight:600;color:var(--c-accent);}
+
+/* training pyramid */
+.training-diagram{display:flex;flex-direction:column;gap:calc(var(--gap-sm) * 1.8);width:100%;}
+.td-step{display:flex;align-items:center;gap:1vw;padding:.8vh 1vw;border-left:2px solid var(--c-accent);}
+.td-step:nth-child(1){background:rgba(200,168,112,.12);}
+.td-step:nth-child(2){background:rgba(200,168,112,.08);}
+.td-step:nth-child(3){background:rgba(200,168,112,.05);}
+.td-step:nth-child(4){background:rgba(200,168,112,.03);}
+.td-num{font-family:var(--f-display);font-size:2vw;font-weight:700;color:var(--c-accent);font-style:italic;line-height:1;flex-shrink:0;width:2.5vw;}
+.td-label{font-family:var(--f-heading);font-size:var(--sz-body);font-weight:500;line-height:1.3;}
+.td-detail{font-family:var(--f-body);font-size:var(--sz-caption);color:var(--c-fg-2);line-height:1.4;margin-left:auto;max-width:55%;text-align:right;}
+.light .td-detail{color:var(--c-fg-light-2);}
+.td-icon{flex-shrink:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
+
+/* ── SKILLS ─────────────────────────────────────────────────────────── */
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
+.skill-cell{border-top:1px solid var(--c-border);padding:var(--gap-md) var(--gap-md) var(--gap-md) 0;display:flex;flex-direction:column;gap:var(--gap-sm);}
+.light .skill-cell{border-color:var(--c-border-light);}
+.skill-label{font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent);}
+.skill-tags{display:flex;flex-wrap:wrap;gap:.4em;}
+.skill-tag{font-family:var(--f-body);font-size:var(--sz-body);color:var(--c-fg-2);background:rgba(200,168,112,.08);border:1px solid rgba(200,168,112,.2);padding:.2em .6em;line-height:1.4;}
+.light .skill-tag{color:var(--c-fg-light-2);}
+
+/* ── END ────────────────────────────────────────────────────────────── */
+.slide--end{display:flex;flex-direction:column;justify-content:center;gap:var(--gap-md);}
+</style>
+</head>
+<body>
+<nav id="nav-dots"></nav>
+<div id="slide-counter"></div>
+<div id="deck">
+
+
+<!-- ═══════ SLIDE 1 · COVER dark ═══════════════════════════════════════
+     Full cover: display name fills bottom half, 3 stat chips top-right,
+     tagline sits between rule and meta bar — no empty space.
+══════════════════════════════════════════════════════════════════════ -->
+<section class="slide dark slide--cover">
+  <!-- floating chips top-right -->
+  <div style="position:absolute;top:var(--pad-y);right:var(--pad-x);display:flex;gap:1vw;z-index:2;" data-anim="fade-in" data-delay="0">
+    <span style="font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.12em;text-transform:uppercase;color:var(--c-accent);border:1px solid rgba(200,168,112,.35);padding:.35em .9em;">Bilingual</span>
+    <span style="font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.12em;text-transform:uppercase;color:var(--c-fg-2);border:1px solid var(--c-border);padding:.35em .9em;">AI-Native</span>
+    <span style="font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.12em;text-transform:uppercase;color:var(--c-fg-2);border:1px solid var(--c-border);padding:.35em .9em;">Global Ops</span>
+  </div>
+
+  <!-- avatar illustration — right side, vertically centred -->
+  <div style="position:absolute;right:var(--pad-x);top:50%;transform:translateY(-50%);width:clamp(180px,22vw,320px);opacity:.95;pointer-events:none;z-index:1;" data-anim="fade-in" data-delay="3">
+    <svg viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+      <defs>
+        <filter id="av-filter" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="linearRGB">
+          <feMorphology operator="dilate" radius="20 20" in="SourceAlpha" result="morphology"/>
+          <feFlood flood-color="#1c2644" flood-opacity="1" result="flood"/>
+          <feComposite in="flood" in2="morphology" operator="in" result="composite"/>
+          <feMerge result="merge">
+            <feMergeNode in="composite" result="mergeNode"/>
+            <feMergeNode in="SourceGraphic" result="mergeNode1"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <g id="notion-avatar" filter="url(#av-filter)">
+        <g id="notion-avatar-face" fill="#ffffff">
+          <g stroke="none" stroke-width="1" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M532,379 C664.54834,379 772,486.45166 772,619 C772,751.54834 764.54834,919 572,919 C415.13263,919 351.668898,801.612202 313.752775,718.980575 L313.322946,718.989282 L312,719 C267.81722,719 232,683.18278 232,639 C232,599.134956 261.158843,566.080325 299.312086,560.00055 C325.599297,455.979213 419.809919,379 532,379 Z M295.858895,624.545187 L304.141105,655.454813" stroke="#000000" stroke-width="24"/>
+          </g>
+        </g>
+        <g id="notion-avatar-nose">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M644 560C644 560 665.892 613.522 673 623C676 627 693.906 641.256 692.774 653.58C690.065 683.076 644 684.359 644 684.359C644 684.359 700 689.489 700 653.58C700 637.222 687 632 674 620C666.959 613.5 644 560 644 560Z" fill="black" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <g id="notion-avatar-mouth">
+          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M572,769 C585.775809,774.333333 599.109142,777 612,777 C624.890858,777 638.224191,774.333333 652,769" stroke="#000000" stroke-width="16"/>
+          </g>
+        </g>
+        <g id="notion-avatar-eyes">
+          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g transform="translate(520.000000, 512.000000)">
+              <g transform="translate(140.000000, 0.000000)">
+                <circle fill="#000000" cx="52" cy="28" r="24"/>
+                <path d="M1,16 C24.2727273,8 41.7272727,4 53.3636364,4 C65,4 79.5454545,8 97,16" stroke="#000000" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" transform="translate(49.000000, 10.000000) rotate(-4.000000) translate(-49.000000, -10.000000) "/>
+              </g>
+              <g>
+                <circle fill="#000000" transform="translate(46.000000, 28.000000) scale(-1, 1) translate(-46.000000, -28.000000) " cx="46" cy="28" r="24"/>
+                <path d="M1,16 C24.2727273,8 41.7272727,4 53.3636364,4 C65,4 79.5454545,8 97,16" stroke="#000000" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" transform="translate(49.000000, 10.000000) scale(-1, 1) rotate(-4.000000) translate(-49.000000, -10.000000) "/>
+              </g>
+            </g>
+          </g>
+        </g>
+        <g id="notion-avatar-eyebrows">
+          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+            <g transform="translate(525.000000, 504.000000)" stroke="#000000" stroke-width="12">
+              <path d="M0,12 C12.8888889,4 27.8888889,0 45,0 C62.1111111,0 77.1111111,4 90,12"/>
+              <path d="M138,12 C150.888889,4 165.888889,0 183,0 C200.111111,0 215.111111,4 228,12"/>
+            </g>
+          </g>
+        </g>
+        <g id="notion-avatar-hair">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M445 265C601.485 215.883 723 324 727 324C729.667 324 729.333 314 732 310C732 310 764 352 760 396C756 440 752.216 445.551 737 470C717.816 433.899 655.516 405.849 570.098 405.849C529.82 405.849 496.705 408.638 444 422C444 422 429.543 433.177 425 438C415.42 448.172 412.102 455.977 408 461C408 461 408.354 437.736 409.769 431.439C399.445 434.309 388.894 437.421 378.119 440.774C378.861 449.966 379.156 482.708 387 499L371 622L368.124 619.455C345.932 599.757 331.688 585.779 325.391 577.52L325 577C318.661 568.473 305.994 562.473 287 559L286.069 555.564C277.514 524.212 269.945 502.053 266.881 480.742C254.807 485.592 242.513 490.679 230 496C269.01 358.746 340.677 297.746 445 265Z" fill="black" stroke="black" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <g id="notion-avatar-accessories">
+          <g>
+            <path d="M848.364 445.584C849.787 445.071 851.352 445.115 852.744 445.707L850.397 451.229C852.744 445.707 852.745 445.707 852.747 445.708L852.75 445.709L852.759 445.713L852.787 445.725L852.876 445.763C852.95 445.796 853.054 445.841 853.185 445.899C853.448 446.015 853.819 446.182 854.28 446.396C855.199 446.822 856.483 447.439 857.966 448.21C860.889 449.731 864.778 451.952 868.204 454.609C871.355 457.053 875.296 460.743 876.573 465.471C877.29 468.125 877.144 471.033 875.712 473.814C874.356 476.446 872.1 478.476 869.469 480.075C863.829 483.501 856.637 484.18 849.944 483.852C843.082 483.515 835.794 482.064 829.258 480.353C822.687 478.634 816.679 476.6 812.325 475.003C810.143 474.202 808.364 473.506 807.122 473.007C806.501 472.758 806.014 472.557 805.677 472.417C805.509 472.347 805.378 472.292 805.287 472.253L805.18 472.208L805.15 472.195L805.14 472.191L805.137 472.19C805.136 472.189 805.135 472.189 807.503 466.676L805.135 472.189C802.871 471.216 801.432 468.958 801.506 466.495C801.58 464.033 803.152 461.866 805.47 461.031L848.364 445.584Z" fill="white" stroke="black" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M861.983 450.136C864.506 451.321 865.881 454.088 865.301 456.815C864.721 459.542 862.34 461.51 859.552 461.566L859.551 461.566L859.536 461.566L859.47 461.568C859.409 461.569 859.315 461.571 859.191 461.575C858.941 461.581 858.568 461.592 858.084 461.609C857.116 461.642 855.708 461.697 853.968 461.787C850.482 461.968 845.689 462.285 840.45 462.832C829.639 463.959 818.065 465.961 811.673 469.176C782.246 483.973 750.71 499.226 720.703 510.561C690.825 521.848 661.816 529.509 637.597 528.591C594.287 526.948 545.131 507.141 507.283 488.165C488.255 478.625 471.883 469.19 460.266 462.139C454.454 458.612 449.826 455.678 446.644 453.62C445.052 452.591 443.822 451.781 442.985 451.225C442.566 450.947 442.246 450.733 442.028 450.587L441.908 450.506L441.779 450.419L441.713 450.374L441.695 450.362L441.689 450.358C441.688 450.357 441.686 450.356 445.06 445.395L441.686 450.356C439.683 448.994 438.696 446.561 439.183 444.188C439.67 441.815 441.536 439.968 443.914 439.505L721.566 385.467C722.815 385.223 724.11 385.384 725.262 385.925L861.983 450.136Z" fill="white" stroke="black" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M742.712 401.356L748.621 400.312C749.13 403.194 747.486 406.022 744.73 407.006L742.712 401.356ZM742.712 401.356C748.621 400.312 748.62 400.309 748.619 400.304L748.617 400.291L748.61 400.25C748.604 400.217 748.595 400.17 748.584 400.111C748.562 399.993 748.531 399.825 748.489 399.607C748.405 399.173 748.279 398.542 748.108 397.73C747.765 396.106 747.239 393.752 746.495 390.777C745.007 384.828 742.644 376.386 739.126 366.312C732.097 346.184 720.417 319.43 701.806 293.031C664.434 240.023 599.167 188.634 488.669 195.067C378.312 201.491 322.938 256.206 295.494 309.669C281.857 336.234 275.177 362.341 271.899 381.774C270.257 391.502 269.462 399.591 269.078 405.274C268.886 408.116 268.796 410.36 268.754 411.909C268.734 412.683 268.725 413.284 268.721 413.7C268.72 413.908 268.719 414.07 268.719 414.184C268.719 414.241 268.719 414.286 268.72 414.319L268.72 414.359L268.72 414.372C268.72 414.377 268.72 414.381 274.72 414.327M742.712 401.356C744.73 407.006 744.729 407.007 744.728 407.007L744.725 407.008L744.714 407.012L744.672 407.027L744.508 407.085C744.364 407.136 744.151 407.212 743.872 407.311C743.314 407.508 742.491 407.798 741.428 408.169C739.303 408.913 736.215 409.984 732.358 411.298C724.646 413.926 713.849 417.531 701.507 421.436C676.883 429.227 645.881 438.29 620.931 443.146C596.034 447.992 557.102 452.549 524.587 455.885C508.288 457.557 493.533 458.929 482.852 459.883C477.511 460.36 473.188 460.733 470.198 460.986C468.703 461.113 467.542 461.21 466.753 461.275C466.359 461.308 466.058 461.333 465.855 461.349L465.625 461.368L465.566 461.373L465.551 461.374L465.548 461.375C465.547 461.375 465.546 461.375 465.061 455.394M274.72 414.327C270.992 419.028 270.993 419.029 270.994 419.03L270.998 419.033L271.006 419.039L271.031 419.059L271.116 419.126C271.189 419.182 271.291 419.262 271.423 419.364C271.687 419.567 272.069 419.858 272.564 420.228C273.553 420.966 274.994 422.017 276.837 423.298C280.521 425.858 285.828 429.346 292.372 433.1C305.414 440.58 323.591 449.24 343.776 453.595C363.727 457.9 394.227 459.822 419.367 460.692C432.015 461.13 443.442 461.306 451.706 461.372C455.839 461.405 459.184 461.41 461.499 461.408C462.656 461.406 463.556 461.403 464.168 461.4C464.475 461.398 464.709 461.397 464.867 461.396L465.048 461.395L465.095 461.394L465.107 461.394L465.11 461.394C465.111 461.394 465.112 461.394 465.061 455.394M274.72 414.327L270.992 419.028C269.571 417.902 268.736 416.194 268.72 414.381L274.72 414.327ZM465.061 455.394L465.546 461.375C465.402 461.386 465.257 461.393 465.112 461.394L465.061 455.394Z" fill="white" stroke="black" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M467.691 222.831C459.814 223.798 452.181 223.033 446.139 220.727C440.381 218.529 434.472 214.203 433.606 207.15C432.739 200.096 437.427 194.469 442.482 190.944C447.787 187.244 455.008 184.655 462.885 183.688C470.762 182.721 478.395 183.486 484.437 185.792C490.196 187.99 496.105 192.316 496.971 199.369C497.837 206.423 493.15 212.05 488.094 215.575C482.789 219.275 475.568 221.864 467.691 222.831Z" fill="white" stroke="black" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </g>
+        <g id="notion-avatar-details">
+          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M491.752948,639.020916 L486.914511,658.42683 M511.752948,639.020916 L506.914511,658.42683 M531.752948,639.020916 L526.914511,658.42683 M789.247052,639.020916 L794.085489,658.42683 M769.247052,639.020916 L774.085489,658.42683 M749.247052,639.020916 L754.085489,658.42683" stroke="#000000" stroke-width="12"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="cover-body">
+    <div class="label muted" data-anim="fade-in" data-delay="1">Personal Portfolio · 2026 · Open to Global Opportunities</div>
+    <div class="rule" data-anim="reveal-right" data-delay="2"></div>
+
+    <!-- display name -->
+    <h1 class="display" data-anim="fade-up" data-delay="3">
+      Stephen Xu<br /><em>许烁锋</em>
+    </h1>
+
+    <!-- tagline — fills the gap between name and meta -->
+    <p style="font-family:var(--f-heading);font-style:italic;font-size:var(--sz-lead);line-height:1.55;color:var(--c-fg-2);max-width:56%;" data-anim="fade-up" data-delay="4">
+      Bilingual operator bridging cross-cultural execution,
+      intelligent automation, and operational excellence
+      across global markets.
+    </p>
+
+    <!-- three quick facts row -->
+    <div style="display:flex;gap:3vw;padding-top:var(--gap-sm);" data-anim="fade-in" data-delay="5">
+      <div style="display:flex;flex-direction:column;gap:.3vh;">
+        <span style="font-family:var(--f-display);font-size:2.4vw;font-weight:600;color:var(--c-accent);line-height:1;">&gt;60%</span>
+        <span style="font-family:var(--f-mono);font-size:var(--sz-caption);letter-spacing:.08em;color:var(--c-fg-3);text-transform:uppercase;">Sales Growth</span>
+      </div>
+      <div style="width:1px;background:var(--c-border);"></div>
+      <div style="display:flex;flex-direction:column;gap:.3vh;">
+        <span style="font-family:var(--f-display);font-size:2.4vw;font-weight:600;color:var(--c-accent);line-height:1;">−50%</span>
+        <span style="font-family:var(--f-mono);font-size:var(--sz-caption);letter-spacing:.08em;color:var(--c-fg-3);text-transform:uppercase;">Manual Work via AI</span>
+      </div>
+      <div style="width:1px;background:var(--c-border);"></div>
+      <div style="display:flex;flex-direction:column;gap:.3vh;">
+        <span style="font-family:var(--f-display);font-size:2.4vw;font-weight:600;color:var(--c-accent);line-height:1;">4 yr</span>
+        <span style="font-family:var(--f-mono);font-size:var(--sz-caption);letter-spacing:.08em;color:var(--c-fg-3);text-transform:uppercase;">Cross-industry XP</span>
+      </div>
+    </div>
+
+    <div class="cover-meta" data-anim="fade-in" data-delay="6">
+      <span class="label muted">Stephen Xu · 许烁锋</span>
+      <span class="label muted">Portfolio · May 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SLIDE 2 · PROFILE + SUMMARY merged (light split) ══════════
+     Left: large italic statement + 4 bullet traits
+     Right: 3 competency blocks with tag pills
+     Replaces old slides 2 & 3 — no chapter interstitial needed.
+══════════════════════════════════════════════════════════════════════ -->
+<section class="slide light">
+  <div class="slide-chrome">
+    <span class="label muted" data-anim="fade-in" data-delay="0">01 · Profile &amp; Competencies</span>
+    <span class="label muted" data-anim="fade-in" data-delay="0">02 / 09</span>
+  </div>
+
+  <div class="slide-body profile-grid" data-anim="fade-up" data-delay="1">
+
+    <!-- LEFT: who I am -->
+    <div class="profile-left">
+      <div class="kicker">Who I Am</div>
+      <h2 class="h2" style="max-width:88%;">
+        Bilingual operator with a bias for <em>action</em> and a systems-first mindset.
+      </h2>
+      <p style="font-family:var(--f-body);font-size:var(--sz-body);color:var(--c-fg-light-2);line-height:1.72;max-width:90%;">
+        Proficient in leveraging <em>AI LLMs</em> for workflow optimisation,
+        structuring knowledge with <em>Notion</em> &amp; <em>Obsidian</em>, and driving
+        operational efficiency through <em>Excel</em> data modelling. Experienced
+        in process optimisation, <em>risk control</em>, and cross-functional
+        coordination across international deployments.
+      </p>
+      <ul class="bullet-list" style="margin-top:var(--gap-sm);">
+        <li>Cross-cultural communicator — English &amp; Mandarin bilingual</li>
+        <li>AI-native workflow builder (n8n · Make · LLM APIs)</li>
+        <li>Proven team leader promoted through performance</li>
+        <li>Global mindset, open to opportunities worldwide</li>
+      </ul>
+    </div>
+
+    <!-- RIGHT: competency blocks -->
+    <div class="profile-right" style="align-self:center;">
+      <div class="comp-row">
+        <div class="comp-label">AI &amp; Automation</div>
+        <div class="comp-tags">
+          <span class="comp-tag">ChatGPT</span><span class="comp-tag">Claude</span><span class="comp-tag">Gemini</span>
+          <span class="comp-tag">n8n</span><span class="comp-tag">Make</span><span class="comp-tag">LLM APIs</span>
+        </div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-label">Operations &amp; Tools</div>
+        <div class="comp-tags">
+          <span class="comp-tag">Excel Modelling</span><span class="comp-tag">Notion</span><span class="comp-tag">Obsidian</span>
+          <span class="comp-tag">Google Sheets</span><span class="comp-tag">MS Office</span>
+        </div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-label">Leadership &amp; Process</div>
+        <div class="comp-tags">
+          <span class="comp-tag">Team Management</span><span class="comp-tag">Risk Control</span>
+          <span class="comp-tag">Cross-functional Coord.</span><span class="comp-tag">Training Design</span>
+          <span class="comp-tag">Multi-timezone Ops</span>
+        </div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-label">Languages</div>
+        <div class="comp-tags">
+          <span class="comp-tag">English — Bilingual</span>
+          <span class="comp-tag">Mandarin — Native</span>
+          <span class="comp-tag">Cantonese</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="slide-foot">
+    <span class="label muted"></span>
+    <span class="label muted" style="color:var(--c-fg-light-3);">02 / 09</span>
+  </div>
+</section>
+
+<!-- ═══════ SLIDE 3 · TIMELINE dark ══════════════════════════════════
+     Career history — promoted to 3rd slide as requested.
+══════════════════════════════════════════════════════════════════════ -->
+<section class="slide dark slide--vtimeline">
+  <div class="slide-chrome">
+    <span class="label muted" data-anim="fade-in" data-delay="0">02 · Career Timeline</span>
+    <span class="label muted" data-anim="fade-in" data-delay="0">03 / 09</span>
+  </div>
+
+  <h2 class="vt-hl" data-anim="fade-up" data-delay="1">
+    Four years across <em>global</em> enterprise &amp; high-growth sales
+  </h2>
+
+  <div class="vtimeline slide-body" data-anim="fade-up" data-delay="2">
+
+    <span class="vt-date">Jun 2024<br/>Feb 2025</span>
+    <div class="vt-spine"></div>
+    <div class="vt-content">
+      <div class="vt-title">Global Programme Deployment</div>
+      <div class="vt-sub">Avery Dennison · GPD</div>
+      <div class="vt-body">
+        Managed international brand deployments (Lululemon, Wolverine) from
+        sample R&amp;D through O2D. Acted as <em>central hub</em> between
+        business and technical teams — aligned multi-timezone requirements
+        and identified risks before the sampling stage.
+      </div>
+    </div>
+
+    <span class="vt-date">Mar 2021<br/>Mar 2024</span>
+    <div class="vt-spine"></div>
+    <div class="vt-content">
+      <div class="vt-title">Sales Team Leader</div>
+      <div class="vt-sub">Guangdong Zhonglian Aluminium Co., Ltd.</div>
+      <div class="vt-body">
+        Promoted to Team Leader. Drove <em>&gt;60% personal annual sales
+        growth</em>, ranked #1 in group performance. Built a 0-to-1
+        newcomer training system, trained 12 new hires, and improved
+        business compliance rate by 25%.
+      </div>
+    </div>
+
+    <span class="vt-date">Sep 2018<br/>Jun 2021</span>
+    <div class="vt-spine"></div>
+    <div class="vt-content">
+      <div class="vt-title">Business English — Diploma</div>
+      <div class="vt-sub">Guangdong Polytechnic of Science and Technology</div>
+      <div class="vt-body">
+        Bilingual business communication, cross-cultural negotiation,
+        and international trade practice.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="slide-foot">
+    <span class="label muted"></span>
+    <span class="label muted">03 / 09</span>
+  </div>
+</section>
+
+<!-- ═══════ SLIDE 4 · STATS dark ══════════════════════════════════════ -->
+<section class="slide dark slide--stats">
+  <div class="slide-chrome">
+    <span class="label muted" data-anim="fade-in" data-delay="0">Impact by the Numbers</span>
+    <span class="label muted" data-anim="fade-in" data-delay="0">04 / 09</span>
+  </div>
+  <div class="slide-body">
+    <h2 class="h2" data-anim="fade-up" data-delay="1">Measurable results across every role</h2>
+    <div class="stats-grid" data-anim="fade-up" data-delay="2">
+      <div class="stat-card">
+        <div class="stat-value">&gt;60%</div>
+        <div class="stat-label">Personal annual sales growth — ranked #1 in group performance</div>
+        <div class="stat-note">Zhonglian · 2021–2024</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">−50%</div>
+        <div class="stat-label">Reduction in manual processing time via n8n + LLM automation pipeline</div>
+        <div class="stat-note">Automation Project · 2025</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">−30%</div>
+        <div class="stat-label">Shorter new-hire transition cycle through 0-to-1 training system</div>
+        <div class="stat-note">Training System · 2022</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">+25%</div>
+        <div class="stat-label">Business compliance rate increase after training system rollout across 12 new hires</div>
+        <div class="stat-note">Team · Zhonglian</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot">
+    <span class="label muted"></span>
+    <span class="label muted">04 / 09</span>
+  </div>
+</section>
+
+
+<section class="slide dark" style="display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;">
+  <!-- ── chrome ── -->
+  <div class="slide-chrome" data-anim="fade-in" data-delay="0">
+    <span class="label muted">03 · Projects</span>
+    <span class="label muted">05 / 09</span>
+  </div>
+
+  <!-- ── body: header + two workflow rows ── -->
+  <div style="display:flex;flex-direction:column;gap:1.8vh;min-height:0;overflow:hidden;" data-anim="fade-up" data-delay="1">
+
+    <!-- header row: title + tag + result pill -->
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-shrink:0;">
+      <div style="display:flex;align-items:baseline;gap:1.4vw;">
+        <h2 style="font-family:var(--f-heading);font-size:2.6vw;font-weight:600;line-height:1.1;color:var(--c-fg);">
+          N8N <em style="font-style:italic;color:var(--c-accent);">Automation</em> Workflow
+        </h2>
+        <span style="font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.12em;text-transform:uppercase;color:var(--c-accent);border:1px solid rgba(200,168,112,.4);padding:.28em .7em;line-height:1;">AI · n8n · Make</span>
+      </div>
+      <span style="font-family:var(--f-heading);font-size:var(--sz-h3);font-weight:500;color:var(--c-accent);font-style:italic;">↓ 50% manual processing time</span>
+    </div>
+
+    <!-- ── WORKFLOW 1 ── -->
+    <div style="flex:1;min-height:0;border:1px solid var(--c-border);border-radius:4px;padding:1.6vh 1.8vw;display:flex;flex-direction:column;gap:1vh;background:rgba(255,255,255,.025);">
+
+      <!-- WF1 label -->
+      <div style="font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent);flex-shrink:0;">
+        Flow 1 — Inbox Parsing &amp; Draft Generation
+      </div>
+
+      <!-- WF1 nodes row -->
+      <div style="flex:1;display:flex;align-items:center;gap:0;min-height:0;">
+
+        <!-- Node: Inbox -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.5vh;flex-shrink:0;min-width:7vw;">
+          <div style="width:44px;height:44px;border-radius:10px;background:#1e2e50;border:1px solid rgba(200,168,112,.5);display:flex;align-items:center;justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="#c8a870" stroke-width="1.5"/><path d="M2 7l10 7 10-7" stroke="#c8a870" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+          <span style="font-family:var(--f-mono);font-size:.58vw;letter-spacing:.07em;text-transform:uppercase;color:#e2dcd0;text-align:center;line-height:1.3;">Email<br/>Inbox</span>
+        </div>
+
+        <!-- arrow -->
+        <div style="flex:1;display:flex;align-items:center;gap:.3vw;padding:0 .5vw;">
+          <div style="flex:1;height:1px;background:rgba(200,168,112,.35);"></div>
+          <span style="font-family:var(--f-mono);font-size:.6vw;color:#c8a870;">▶</span>
+        </div>
+        <!-- arrow label -->
+
+        <!-- Node: n8n trigger -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.5vh;flex-shrink:0;min-width:7vw;">
+          <div style="width:44px;height:44px;border-radius:10px;background:#1a1e2e;border:1px solid #ea4b71;display:flex;align-items:center;justify-content:center;">
+            <svg width="28" height="28" viewBox="0 0 30 30" fill="none"><circle cx="8" cy="15" r="4.5" fill="#ea4b71" opacity=".9"/><circle cx="22" cy="15" r="4.5" fill="#ea4b71" opacity=".9"/><path d="M12.5 15 Q15 9 17.5 15 Q15 21 12.5 15Z" fill="#ff6d8b" opacity=".7"/></svg>
+          </div>
+          <span style="font-family:var(--f-mono);font-size:.58vw;letter-spacing:.07em;text-transform:uppercase;color:#e2dcd0;text-align:center;line-height:1.3;">n8n<br/>Trigger</span>
+        </div>
+        <!-- WF1 note: n8n styled node above -->
+
+        <!-- arrow + action label -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.2vh;padding:0 .5vw;">
+          <span style="font-family:var(--f-mono);font-size:.55vw;color:#8a96a8;letter-spacing:.04em;white-space:nowrap;">watch &amp; forward</span>
+          <div style="display:flex;align-items:center;width:100%;gap:.2vw;">
+            <div style="flex:1;height:1px;background:rgba(200,168,112,.35);"></div>
+            <span style="font-family:var(--f-mono);font-size:.6vw;color:#c8a870;">▶</span>
+          </div>
+        </div>
+
+        <!-- Node: LLM -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.5vh;flex-shrink:0;min-width:7vw;">
+          <div style="width:44px;height:44px;border-radius:10px;background:#0f1a2e;border:1px solid rgba(200,168,112,.5);display:flex;align-items:center;justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3C8.5 3 6 5.5 6 8.5c0 1.5.5 2.8 1.4 3.8C6.5 13 6 14 6 15c0 2.2 1.8 4 4 4h4c2.2 0 4-1.8 4-4 0-1-.5-2-1.4-2.7.9-1 1.4-2.3 1.4-3.8C18 5.5 15.5 3 12 3z" stroke="#c8a870" stroke-width="1.4" fill="none"/><line x1="9" y1="10" x2="9" y2="13" stroke="#c8a870" stroke-width="1.3" stroke-linecap="round"/><line x1="12" y1="9" x2="12" y2="14" stroke="#c8a870" stroke-width="1.3" stroke-linecap="round"/><line x1="15" y1="10" x2="15" y2="13" stroke="#c8a870" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+          <span style="font-family:var(--f-mono);font-size:.58vw;letter-spacing:.07em;text-transform:uppercase;color:#e2dcd0;text-align:center;line-height:1.3;">LLM<br/>Parse</span>
+        </div>
+
+        <!-- arrow + action label -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.2vh;padding:0 .5vw;">
+          <span style="font-family:var(--f-mono);font-size:.55vw;color:#8a96a8;letter-spacing:.04em;white-space:nowrap;">extract &amp; draft</span>
+          <div style="display:flex;align-items:center;width:100%;gap:.2vw;">
+            <div style="flex:1;height:1px;background:rgba(200,168,112,.35);"></div>
+            <span style="font-family:var(--f-mono);font-size:.6vw;color:#c8a870;">▶</span>
+          </div>
+        </div>
+
+        <!-- Node: Google Sheets -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.5vh;flex-shrink:0;min-width:10vw;">
+          <div style="width:44px;height:44px;border-radius:10px;background:#1a2e20;border:1px solid rgba(52,168,83,.6);display:flex;align-items:center;justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="2" width="16" height="20" rx="2" fill="#34a853" opacity=".12" stroke="#34a853" stroke-width="1.4"/><line x1="4" y1="8" x2="20" y2="8" stroke="#34a853" stroke-width=".9"/><line x1="4" y1="12" x2="20" y2="12" stroke="#34a853" stroke-width=".9"/><line x1="4" y1="16" x2="20" y2="16" stroke="#34a853" stroke-width=".9"/><line x1="10" y1="8" x2="10" y2="20" stroke="#34a853" stroke-width=".9"/></svg>
+          </div>
+          <span style="font-family:var(--f-mono);font-size:.58vw;letter-spacing:.07em;text-transform:uppercase;color:#e2dcd0;text-align:center;line-height:1.3;">Google<br/>Sheets</span>
+        </div>
+
+      </div>
+
+      <!-- WF1 fields row (below nodes) -->
+      <div style="flex-shrink:0;display:flex;gap:.5vw;flex-wrap:wrap;">
+        <span style="font-family:var(--f-mono);font-size:.55vw;letter-spacing:.05em;color:#8a96a8;text-transform:uppercase;padding-right:.5vw;white-space:nowrap;">Columns →</span>
+        <span style="font-family:var(--f-mono);font-size:.55vw;letter-spacing:.05em;color:#e2dcd0;background:rgba(200,168,112,.12);border:1px solid rgba(200,168,112,.25);padding:.18em .55em;">Sender</span>
+        <span style="font-family:var(--f-mono);font-size:.55vw;letter-spacing:.05em;color:#e2dcd0;background:rgba(200,168,112,.12);border:1px solid rgba(200,168,112,.25);padding:.18em .55em;">Subject</span>
+        <span style="font-family:var(--f-mono);font-size:.55vw;letter-spacing:.05em;color:#e2dcd0;background:rgba(200,168,112,.12);border:1px solid rgba(200,168,112,.25);padding:.18em .55em;">Pain Point</span>
+        <span style="font-family:var(--f-mono);font-size:.55vw;letter-spacing:.05em;color:#e2dcd0;background:rgba(200,168,112,.12);border:1px solid rgba(200,168,112,.25);padding:.18em .55em;">Category</span>
+        <span style="font-family:var(--f-mono);font-size:.55vw;letter-spacing:.05em;color:#e2dcd0;background:rgba(200,168,112,.12);border:1px solid rgba(200,168,112,.25);padding:.18em .55em;">Draft</span>
+        <span style="font-family:var(--f-mono);font-size:.55vw;letter-spacing:.05em;background:rgba(52,168,83,.2);border:1px solid rgba(52,168,83,.5);color:#7dd4a0;padding:.18em .55em;">Status</span>
+      </div>
+    </div>
+
+    <!-- ── WORKFLOW 2 ── -->
+    <div style="flex:1;min-height:0;border:1px solid var(--c-border);border-radius:4px;padding:1.6vh 1.8vw;display:flex;flex-direction:column;gap:1vh;background:rgba(255,255,255,.018);">
+
+      <!-- WF2 label -->
+      <div style="font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.14em;text-transform:uppercase;color:var(--c-accent);flex-shrink:0;">
+        Flow 2 — Approved Draft Dispatch
+      </div>
+
+      <!-- WF2 nodes row -->
+      <div style="flex:1;display:flex;align-items:center;gap:0;min-height:0;">
+
+        <!-- Node: Google Sheets -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.5vh;flex-shrink:0;min-width:10vw;">
+          <div style="width:44px;height:44px;border-radius:10px;background:#1a2e20;border:1px solid rgba(52,168,83,.6);display:flex;align-items:center;justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="2" width="16" height="20" rx="2" fill="#34a853" opacity=".12" stroke="#34a853" stroke-width="1.4"/><line x1="4" y1="8" x2="20" y2="8" stroke="#34a853" stroke-width=".9"/><line x1="4" y1="12" x2="20" y2="12" stroke="#34a853" stroke-width=".9"/><line x1="4" y1="16" x2="20" y2="16" stroke="#34a853" stroke-width=".9"/><line x1="10" y1="8" x2="10" y2="20" stroke="#34a853" stroke-width=".9"/></svg>
+          </div>
+          <!-- "approved" status badge under icon -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:.2vh;">
+            <span style="font-family:var(--f-mono);font-size:.58vw;letter-spacing:.07em;text-transform:uppercase;color:#e2dcd0;line-height:1.3;">Google<br/>Sheets</span>
+            <span style="font-family:var(--f-mono);font-size:.5vw;background:rgba(52,168,83,.25);border:1px solid rgba(52,168,83,.6);color:#7dd4a0;padding:.12em .5em;letter-spacing:.06em;">STATUS = approved</span>
+          </div>
+        </div>
+
+        <!-- arrow + action label -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.2vh;padding:0 .5vw;">
+          <span style="font-family:var(--f-mono);font-size:.55vw;color:#8a96a8;letter-spacing:.04em;white-space:nowrap;">poll for status</span>
+          <div style="display:flex;align-items:center;width:100%;gap:.2vw;">
+            <div style="flex:1;height:1px;background:rgba(200,168,112,.35);"></div>
+            <span style="font-family:var(--f-mono);font-size:.6vw;color:#c8a870;">▶</span>
+          </div>
+        </div>
+
+        <!-- Node: n8n dispatch -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.5vh;flex-shrink:0;min-width:7vw;">
+          <div style="width:44px;height:44px;border-radius:10px;background:#1a1e2e;border:1px solid #ea4b71;display:flex;align-items:center;justify-content:center;">
+            <svg width="28" height="28" viewBox="0 0 30 30" fill="none"><circle cx="8" cy="15" r="4.5" fill="#ea4b71" opacity=".9"/><circle cx="22" cy="15" r="4.5" fill="#ea4b71" opacity=".9"/><path d="M12.5 15 Q15 9 17.5 15 Q15 21 12.5 15Z" fill="#ff6d8b" opacity=".7"/></svg>
+          </div>
+          <span style="font-family:var(--f-mono);font-size:.58vw;letter-spacing:.07em;text-transform:uppercase;color:#e2dcd0;text-align:center;line-height:1.3;">n8n<br/>Dispatch</span>
+        </div>
+
+        <!-- arrow + action label -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.2vh;padding:0 .5vw;">
+          <span style="font-family:var(--f-mono);font-size:.55vw;color:#8a96a8;letter-spacing:.04em;white-space:nowrap;">push draft</span>
+          <div style="display:flex;align-items:center;width:100%;gap:.2vw;">
+            <div style="flex:1;height:1px;background:rgba(200,168,112,.35);"></div>
+            <span style="font-family:var(--f-mono);font-size:.6vw;color:#c8a870;">▶</span>
+          </div>
+        </div>
+
+        <!-- Node: Inbox (send) -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.5vh;flex-shrink:0;min-width:7vw;">
+          <div style="width:44px;height:44px;border-radius:10px;background:#1e2e50;border:1px solid rgba(200,168,112,.5);display:flex;align-items:center;justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="#c8a870" stroke-width="1.5"/><path d="M2 7l10 7 10-7" stroke="#c8a870" stroke-width="1.5" stroke-linejoin="round"/><path d="M16 15l3-3-3-3" stroke="#c8a870" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span style="font-family:var(--f-mono);font-size:.58vw;letter-spacing:.07em;text-transform:uppercase;color:#e2dcd0;text-align:center;line-height:1.3;">Email<br/>Sent</span>
+        </div>
+
+      </div>
+
+      <!-- WF2 note -->
+      <div style="flex-shrink:0;font-family:var(--f-body);font-size:.8vw;color:#8a96a8;line-height:1.5;">
+        Scans sheet on schedule → finds <span style="color:#7dd4a0;font-family:var(--f-mono);font-size:.75vw;">approved</span> rows → retrieves draft column → sends reply from inbox automatically
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- ── footer ── -->
+  <div class="slide-foot">
+    <span class="label muted">n8n · LLM APIs · Google Sheets</span>
+    <span class="label muted">05 / 09</span>
+  </div>
+</section>
+
+
+
+<!-- ═══════ SLIDE 6 · PROJECT 02 — Social Media (light) ══════════════ -->
+<section class="slide light slide--project">
+  <div class="slide-chrome">
+    <span class="label muted" data-anim="fade-in" data-delay="0">03 · Projects</span>
+    <span class="label muted" data-anim="fade-in" data-delay="0">06 / 09</span>
+  </div>
+
+
+
+  <div class="project-layout slide-body" data-anim="fade-up" data-delay="1">
+
+    <!-- LEFT -->
+    <div class="project-left">
+      <span class="project-tag" style="border-color:var(--c-border-light);color:var(--c-fg-light-2);">Social Media · Cross-border</span>
+      <h2 class="project-title-lg" style="color:var(--c-fg-light);">
+        Cross-border <em>Social Media</em><br/>Operation
+      </h2>
+      <p class="project-desc-lg">
+        Managed TikTok and WeChat Official Account channels for
+        cross-border customer acquisition. Used AI tools to build
+        a standardised content production system — consistent output,
+        scalable format, measurable growth.
+      </p>
+      <ul class="bullet-list">
+        <li>AI-assisted content production pipeline for both platforms</li>
+        <li>Standardised post format &amp; publishing cadence</li>
+        <li>Audience growth tracked and iterated week-over-week</li>
+        <li>Content repurposed across TikTok and WeChat efficiently</li>
+      </ul>
+      <div class="project-result-bar" style="border-color:var(--c-border-light);">
+        <span class="project-result-label" style="color:var(--c-fg-light-3);">Key Outcomes</span>
+        <span class="project-result-val">1,000+ TikTok followers · Peak 600 views</span>
+        <span style="font-family:var(--f-mono);font-size:var(--sz-caption);color:var(--c-fg-light-3);letter-spacing:.06em;">WeChat Official Account +200 fans</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: 2×2 platform cards -->
+    <div class="project-visual" style="border-color:var(--c-border-light);">
+      <div class="social-icon-grid">
+
+        <!-- TikTok -->
+        <div class="si-card">
+          <div class="si-icon">
+            <!-- TikTok logo: musical note silhouette in brand colours -->
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="42" height="42" rx="10" fill="#010101"/>
+              <!-- white d-shape body -->
+              <path d="M28 10c.5 3.5 2.5 5.5 5.5 6v4c-2 0-4-.5-5.5-1.5V26c0 5-3.5 8-8 7.5-4-.4-7-4-6.5-8 .4-3.5 3.5-6.3 7-6.3.5 0 1 .1 1.5.2v4.1c-.4-.1-.9-.2-1.4-.2-2 0-3.5 1.5-3.5 3.5s1.5 3.5 3.5 3.5c2.2 0 3.8-1.6 3.8-3.8V10H28z" fill="white"/>
+              <!-- teal shadow -->
+              <path d="M27 9c.5 3.5 2.5 5.5 5.5 6v4c-2 0-4-.5-5.5-1.5V25c0 5-3.5 8-8 7.5" stroke="#69c9d0" stroke-width="1.2" fill="none" opacity=".7"/>
+              <!-- red shadow -->
+              <path d="M29 11c.5 3.5 2.5 5.5 5.5 6v4c-2 0-4-.5-5.5-1.5V27c0 5-3.5 8-8 7.5" stroke="#ee1d52" stroke-width="1.2" fill="none" opacity=".7"/>
+            </svg>
+          </div>
+          <span class="si-stat" style="color:var(--c-fg-light);">1,000+</span>
+          <span class="si-name" style="color:var(--c-fg-light-3);">TikTok Followers</span>
+        </div>
+
+        <!-- WeChat -->
+        <div class="si-card">
+          <div class="si-icon">
+            <!-- WeChat logo: two speech bubbles -->
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="42" height="42" rx="10" fill="#07c160" opacity=".12"/>
+              <!-- larger bubble -->
+              <ellipse cx="17" cy="19" rx="9" ry="7" fill="none" stroke="#07c160" stroke-width="1.6"/>
+              <circle cx="14" cy="19" r="1.2" fill="#07c160"/>
+              <circle cx="17.5" cy="19" r="1.2" fill="#07c160"/>
+              <circle cx="21" cy="19" r="1.2" fill="#07c160"/>
+              <!-- smaller bubble -->
+              <ellipse cx="27" cy="24" rx="7" ry="5.5" fill="none" stroke="#07c160" stroke-width="1.4" opacity=".7"/>
+              <circle cx="24.5" cy="24" r="1" fill="#07c160" opacity=".7"/>
+              <circle cx="27.5" cy="24" r="1" fill="#07c160" opacity=".7"/>
+            </svg>
+          </div>
+          <span class="si-stat" style="color:var(--c-fg-light);">+200</span>
+          <span class="si-name" style="color:var(--c-fg-light-3);">WeChat Fans</span>
+        </div>
+
+        <!-- AI Content Tools -->
+        <div class="si-card">
+          <div class="si-icon">
+            <!-- Sparkle / AI wand icon -->
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="42" height="42" rx="10" fill="rgba(200,168,112,.08)"/>
+              <!-- wand stick -->
+              <line x1="12" y1="30" x2="24" y2="18" stroke="#c8a870" stroke-width="2" stroke-linecap="round"/>
+              <!-- sparkle star -->
+              <path d="M27 10 L28.2 14 L32 15 L28.2 16 L27 20 L25.8 16 L22 15 L25.8 14 Z" fill="#c8a870"/>
+              <!-- small stars -->
+              <path d="M15 12 L15.7 14 L17.5 14.5 L15.7 15 L15 17 L14.3 15 L12.5 14.5 L14.3 14 Z" fill="#c8a870" opacity=".5"/>
+              <path d="M32 24 L32.5 25.5 L34 26 L32.5 26.5 L32 28 L31.5 26.5 L30 26 L31.5 25.5 Z" fill="#c8a870" opacity=".5"/>
+            </svg>
+          </div>
+          <span class="si-stat" style="color:var(--c-fg-light);">AI</span>
+          <span class="si-name" style="color:var(--c-fg-light-3);">Content Tools</span>
+        </div>
+
+        <!-- Peak Views -->
+        <div class="si-card">
+          <div class="si-icon">
+            <!-- Bar chart / views icon -->
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="42" height="42" rx="10" fill="rgba(105,201,208,.06)"/>
+              <!-- bars -->
+              <rect x="10" y="24" width="5" height="9"  rx="1" fill="#69c9d0" opacity=".5"/>
+              <rect x="18" y="18" width="5" height="15" rx="1" fill="#69c9d0" opacity=".7"/>
+              <rect x="26" y="12" width="5" height="21" rx="1" fill="#69c9d0"/>
+              <!-- baseline -->
+              <line x1="8" y1="33" x2="34" y2="33" stroke="#69c9d0" stroke-width="1.2" opacity=".4"/>
+              <!-- trend arrow -->
+              <polyline points="10,27 18,21 26,15" stroke="#c8a870" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+              <polygon points="28,13 26,17 30,16" fill="#c8a870"/>
+            </svg>
+          </div>
+          <span class="si-stat" style="color:var(--c-fg-light);">600</span>
+          <span class="si-name" style="color:var(--c-fg-light-3);">Peak Views</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="slide-foot">
+    <span class="label muted" style="color:var(--c-fg-light-3);">TikTok · WeChat Official Account · AI Content Pipeline</span>
+    <span class="label muted" style="color:var(--c-fg-light-3);">06 / 09</span>
+  </div>
+</section>
+
+
+<!-- ═══════ SLIDE 7 · PROJECT 03 — Training System (dark) ════════════
+     Left: project details + outcome metrics
+     Right: 4-step ladder diagram — Onboarding → Product Knowledge
+            → Process Compliance → Performance Ramp
+     Each step: icon + label + detail, widening like a pyramid
+══════════════════════════════════════════════════════════════════════ -->
+<section class="slide dark slide--project">
+  <div class="slide-chrome">
+    <span class="label muted" data-anim="fade-in" data-delay="0">03 · Projects</span>
+    <span class="label muted" data-anim="fade-in" data-delay="0">07 / 09</span>
+  </div>
+
+
+
+  <div class="project-layout slide-body" data-anim="fade-up" data-delay="1">
+
+    <!-- LEFT -->
+    <div class="project-left">
+      <span class="project-tag">People Ops · Knowledge Design</span>
+      <h2 class="project-title-lg">
+        Newcomer <em>Training</em><br/>System
+      </h2>
+      <p class="project-desc-lg">
+        Built a comprehensive 0-to-1 training structure from scratch
+        to help new hires quickly understand products, industry context,
+        and internal processes. Documented, structured, and repeatable —
+        designed to scale without the builder in the room.
+      </p>
+      <ul class="bullet-list">
+        <li>Full product &amp; industry knowledge curriculum</li>
+        <li>Standardised onboarding journey — <em style="white-space:nowrap;">day 1 to ramp-complete</em></li>
+        <li>Business process compliance modules baked in</li>
+        <li>Reusable materials, zero reliance on tribal knowledge</li>
+      </ul>
+      <div class="project-result-bar">
+        <span class="project-result-label">Key Outcomes</span>
+        <div style="display:flex;gap:2.5vw;margin-top:.4vh;">
+          <div>
+            <div style="font-family:var(--f-display);font-size:2.8vw;font-weight:600;color:var(--c-accent);line-height:1;">12</div>
+            <div style="font-family:var(--f-mono);font-size:var(--sz-caption);letter-spacing:.06em;color:var(--c-fg-3);text-transform:uppercase;">Hires Trained</div>
+          </div>
+          <div style="width:1px;background:var(--c-border);"></div>
+          <div>
+            <div style="font-family:var(--f-display);font-size:2.8vw;font-weight:600;color:var(--c-accent);line-height:1;">−30%</div>
+            <div style="font-family:var(--f-mono);font-size:var(--sz-caption);letter-spacing:.06em;color:var(--c-fg-3);text-transform:uppercase;">Transition Cycle</div>
+          </div>
+          <div style="width:1px;background:var(--c-border);"></div>
+          <div>
+            <div style="font-family:var(--f-display);font-size:2.8vw;font-weight:600;color:var(--c-accent);line-height:1;">+25%</div>
+            <div style="font-family:var(--f-mono);font-size:var(--sz-caption);letter-spacing:.06em;color:var(--c-fg-3);text-transform:uppercase;">Compliance Rate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: 4-step training ladder -->
+    <div class="project-visual">
+      <div class="training-diagram" style="width:100%;">
+
+        <!-- Step 1: Orientation -->
+        <div class="td-step">
+          <div class="td-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="8" r="3.5" stroke="#c8a870" stroke-width="1.4"/>
+              <path d="M4 19c0-3.9 3.1-7 7-7h.2c3.9 0 7 3.1 7 7" stroke="#c8a870" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="td-num">01</div>
+          <div class="td-label">Orientation &amp; Culture</div>
+          <div class="td-detail">Company context, team structure, role expectations</div>
+        </div>
+
+        <!-- Step 2: Product Knowledge -->
+        <div class="td-step">
+          <div class="td-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <rect x="3" y="3" width="16" height="16" rx="2" stroke="#c8a870" stroke-width="1.4"/>
+              <line x1="7" y1="8"  x2="15" y2="8"  stroke="#c8a870" stroke-width="1.2"/>
+              <line x1="7" y1="11" x2="15" y2="11" stroke="#c8a870" stroke-width="1.2"/>
+              <line x1="7" y1="14" x2="12" y2="14" stroke="#c8a870" stroke-width="1.2"/>
+            </svg>
+          </div>
+          <div class="td-num">02</div>
+          <div class="td-label">Product &amp; Industry Knowledge</div>
+          <div class="td-detail">Materials, specs, competitive landscape, use cases</div>
+        </div>
+
+        <!-- Step 3: Process Compliance -->
+        <div class="td-step">
+          <div class="td-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path d="M11 2L4 5.5v5.5c0 4.4 3 8.5 7 9.5 4-1 7-5.1 7-9.5V5.5L11 2z" stroke="#c8a870" stroke-width="1.4"/>
+              <polyline points="7.5,11 10,13.5 14.5,9" stroke="#c8a870" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="td-num">03</div>
+          <div class="td-label">Business Process &amp; Compliance</div>
+          <div class="td-detail">SOPs, reporting standards, risk checkpoints</div>
+        </div>
+
+        <!-- Step 4: Performance Ramp -->
+        <div class="td-step">
+          <div class="td-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <polyline points="3,16 7,11 11,13 15,7 19,9" stroke="#c8a870" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="19" cy="9" r="1.5" fill="#c8a870"/>
+            </svg>
+          </div>
+          <div class="td-num">04</div>
+          <div class="td-label">Performance Ramp &amp; Go-Live</div>
+          <div class="td-detail">Real-deal handling, KPI tracking, sign-off</div>
+        </div>
+
+      </div>
+
+      <!-- outcome ribbon below diagram -->
+      <div style="display:flex;gap:0;width:100%;margin-top:var(--gap-sm);">
+        <div style="flex:1;text-align:center;padding:.6vh .5vw;border-top:2px solid var(--c-accent);font-family:var(--f-mono);font-size:.6vw;letter-spacing:.08em;color:var(--c-accent);text-transform:uppercase;">Documented</div>
+        <div style="flex:1;text-align:center;padding:.6vh .5vw;border-top:2px solid rgba(200,168,112,.5);font-family:var(--f-mono);font-size:.6vw;letter-spacing:.08em;color:var(--c-fg-3);text-transform:uppercase;">Scalable</div>
+        <div style="flex:1;text-align:center;padding:.6vh .5vw;border-top:2px solid rgba(200,168,112,.3);font-family:var(--f-mono);font-size:.6vw;letter-spacing:.08em;color:var(--c-fg-3);text-transform:uppercase;">Repeatable</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="slide-foot">
+    <span class="label muted">0-to-1 Build · 12 Hires · −30% Cycle · +25% Compliance</span>
+    <span class="label muted">07 / 09</span>
+  </div>
+</section>
+
+
+<!-- ═══════ SLIDE 8 · SKILLS light ════════════════════════════════════
+     3×2 grid of skill cells — each cell has an SVG category icon,
+     mono label, and tag pills. Fills the space properly.
+══════════════════════════════════════════════════════════════════════ -->
+<section class="slide light">
+  <div class="slide-chrome">
+    <span class="label muted" data-anim="fade-in" data-delay="0">04 · Skills &amp; Tools</span>
+    <span class="label muted" data-anim="fade-in" data-delay="0">08 / 09</span>
+  </div>
+
+  <div class="slide-body" style="display:flex;flex-direction:column;justify-content:center;gap:var(--gap-md);" data-anim="fade-up" data-delay="1">
+    <h2 class="h2" style="color:var(--c-fg-light);">Tools, languages &amp; <em>capabilities</em></h2>
+
+    <div class="skills-grid">
+
+      <!-- AI & Automation -->
+      <div class="skill-cell">
+        <div style="display:flex;align-items:center;gap:.7vw;margin-bottom:.3vh;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 1 .4 2 1 2.7-.6.5-1 1.3-1 2.1 0 1.5 1.2 2.7 2.7 2.7h3.7c1.5 0 2.7-1.2 2.7-2.7 0-.8-.4-1.6-1-2.1.6-.7 1-1.7 1-2.7 0-2.5-2-4.5-4.6-4.5z" stroke="#c8a870" stroke-width="1.1" fill="none"/>
+            <line x1="6"  y1="6.5" x2="6"  y2="8.5" stroke="#c8a870" stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="8"  y1="6"   x2="8"  y2="9"   stroke="#c8a870" stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="10" y1="6.5" x2="10" y2="8.5" stroke="#c8a870" stroke-width="1.1" stroke-linecap="round"/>
+          </svg>
+          <div class="skill-label">AI &amp; Automation</div>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">ChatGPT</span><span class="skill-tag">Claude</span><span class="skill-tag">Gemini</span>
+          <span class="skill-tag">n8n</span><span class="skill-tag">Make</span><span class="skill-tag">LLM APIs</span>
+        </div>
+      </div>
+
+      <!-- Productivity & Data -->
+      <div class="skill-cell">
+        <div style="display:flex;align-items:center;gap:.7vw;margin-bottom:.3vh;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="2" y="2" width="12" height="12" rx="1.5" stroke="#c8a870" stroke-width="1.1"/>
+            <line x1="2" y1="6"  x2="14" y2="6"  stroke="#c8a870" stroke-width=".9"/>
+            <line x1="2" y1="10" x2="14" y2="10" stroke="#c8a870" stroke-width=".9"/>
+            <line x1="6" y1="6"  x2="6"  y2="14" stroke="#c8a870" stroke-width=".9"/>
+          </svg>
+          <div class="skill-label">Productivity &amp; Data</div>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">Excel (Advanced)</span><span class="skill-tag">Notion</span>
+          <span class="skill-tag">Obsidian</span><span class="skill-tag">Google Sheets</span><span class="skill-tag">MS Office</span>
+        </div>
+      </div>
+
+      <!-- Languages -->
+      <div class="skill-cell">
+        <div style="display:flex;align-items:center;gap:.7vw;margin-bottom:.3vh;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="5.5" stroke="#c8a870" stroke-width="1.1"/>
+            <path d="M8 2.5C6.5 4.5 5.5 6 5.5 8s1 3.5 2.5 5.5" stroke="#c8a870" stroke-width=".9"/>
+            <path d="M8 2.5C9.5 4.5 10.5 6 10.5 8s-1 3.5-2.5 5.5" stroke="#c8a870" stroke-width=".9"/>
+            <line x1="2.5" y1="8" x2="13.5" y2="8" stroke="#c8a870" stroke-width=".9"/>
+          </svg>
+          <div class="skill-label">Languages</div>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">English — Bilingual</span>
+          <span class="skill-tag">Mandarin — Native</span>
+          <span class="skill-tag">Cantonese</span>
+        </div>
+      </div>
+
+      <!-- Operations -->
+      <div class="skill-cell">
+        <div style="display:flex;align-items:center;gap:.7vw;margin-bottom:.3vh;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="2" y="9" width="3" height="5" rx=".8" stroke="#c8a870" stroke-width="1.1"/>
+            <rect x="6.5" y="6" width="3" height="8" rx=".8" stroke="#c8a870" stroke-width="1.1"/>
+            <rect x="11" y="3" width="3" height="11" rx=".8" stroke="#c8a870" stroke-width="1.1"/>
+          </svg>
+          <div class="skill-label">Operations</div>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">Project Mgmt</span><span class="skill-tag">Risk Control</span>
+          <span class="skill-tag">Cross-functional Coord.</span><span class="skill-tag">Process Optimisation</span>
+          <span class="skill-tag">Multi-timezone Ops</span>
+        </div>
+      </div>
+
+      <!-- Commercial -->
+      <div class="skill-cell">
+        <div style="display:flex;align-items:center;gap:.7vw;margin-bottom:.3vh;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1.5L10 6h4.5l-3.5 2.5 1.5 4.5L8 10.5l-4.5 2.5 1.5-4.5L1.5 6H6z" stroke="#c8a870" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+          </svg>
+          <div class="skill-label">Commercial</div>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">B2B Sales</span><span class="skill-tag">Team Leadership</span>
+          <span class="skill-tag">Training Design</span><span class="skill-tag">Performance Analysis</span>
+        </div>
+      </div>
+
+      <!-- Digital & Social -->
+      <div class="skill-cell">
+        <div style="display:flex;align-items:center;gap:.7vw;margin-bottom:.3vh;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="1.5" y="3" width="13" height="9" rx="1.5" stroke="#c8a870" stroke-width="1.1"/>
+            <line x1="5"  y1="12" x2="11" y2="12" stroke="#c8a870" stroke-width="1.1"/>
+            <line x1="8"  y1="12" x2="8"  y2="14" stroke="#c8a870" stroke-width="1.1"/>
+            <polyline points="3.5,9.5 5.5,6.5 7.5,8 9.5,5 12.5,7" stroke="#c8a870" stroke-width=".9" fill="none" stroke-linejoin="round"/>
+          </svg>
+          <div class="skill-label">Digital &amp; Social</div>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag">TikTok</span><span class="skill-tag">WeChat OA</span>
+          <span class="skill-tag">Content Strategy</span><span class="skill-tag">Social Media Ops</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="slide-foot">
+    <span class="label muted" style="color:var(--c-fg-light-3);"></span>
+    <span class="label muted" style="color:var(--c-fg-light-3);">08 / 09</span>
+  </div>
+</section>
+
+<!-- ═══════ SLIDE 9 · END dark ════════════════════════════════════════ -->
+<section class="slide dark slide--end">
+  <div class="rule" data-anim="reveal-right" data-delay="0"></div>
+  <h1 class="h1" style="max-width:80%;" data-anim="fade-up" data-delay="1">
+    Let's build something <em>remarkable</em> together.
+  </h1>
+  <p class="lead muted" style="max-width:70%;" data-anim="fade-up" data-delay="2">
+    Open to roles in operations, project management, business development,
+    and AI-adjacent functions — anywhere in the world.
+  </p>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2.5vw;margin-top:var(--gap-lg);padding-top:var(--gap-md);border-top:1px solid var(--c-border);width:100%;flex:1;align-content:start;" data-anim="fade-in" data-delay="3">
+
+    <!-- Name -->
+    <div style="display:flex;flex-direction:column;gap:.6vh;">
+      <div style="font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.14em;text-transform:uppercase;color:var(--c-fg-3);">Name</div>
+      <div style="font-family:var(--f-heading);font-size:var(--sz-h3);color:var(--c-fg);">Stephen Xu · 许烁锋</div>
+    </div>
+
+    <!-- Location Preference -->
+    <div style="display:flex;flex-direction:column;gap:.6vh;">
+      <div style="font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.14em;text-transform:uppercase;color:var(--c-fg-3);">Location</div>
+      <div style="font-family:var(--f-heading);font-size:var(--sz-h3);color:var(--c-fg);">Global — Overseas</div>
+    </div>
+
+    <!-- Availability -->
+    <div style="display:flex;flex-direction:column;gap:.6vh;">
+      <div style="font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.14em;text-transform:uppercase;color:var(--c-fg-3);">Availability</div>
+      <div style="font-family:var(--f-heading);font-size:var(--sz-h3);color:var(--c-accent);">Open · May 2026</div>
+    </div>
+
+    <!-- Email -->
+    <div style="display:flex;flex-direction:column;gap:.6vh;">
+      <div style="font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.14em;text-transform:uppercase;color:var(--c-fg-3);">Email</div>
+      <div style="font-family:var(--f-heading);font-size:var(--sz-h3);color:var(--c-fg);word-break:break-all;">1119117642xsf@gmail.com</div>
+    </div>
+
+    <!-- Phone / WeChat -->
+    <div style="display:flex;flex-direction:column;gap:.6vh;">
+      <div style="font-family:var(--f-mono);font-size:var(--sz-label);letter-spacing:.14em;text-transform:uppercase;color:var(--c-fg-3);">Phone / WeChat</div>
+      <div style="font-family:var(--f-heading);font-size:var(--sz-h3);color:var(--c-fg);">+86 131 1237 0893</div>
+    </div>
+
+  </div>
+</section>
+
+</div><!-- /#deck -->
+
+<!-- ═══════ JS ENGINE ══════════════════════════════════════════════════ -->
+<script>
+(function () {
+  const deck    = document.getElementById('deck');
+  const counter = document.getElementById('slide-counter');
+  const dotsNav = document.getElementById('nav-dots');
+  const slides  = Array.from(deck.querySelectorAll('.slide'));
+  const total   = slides.length;
+  let current   = 0;
+
+  /* build nav dots */
+  slides.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'nav-dot' + (i === 0 ? ' is-active' : '');
+    btn.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    btn.addEventListener('click', () => goTo(i));
+    dotsNav.appendChild(btn);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('is-active');
+    dotsNav.children[current].classList.remove('is-active');
+    current = Math.max(0, Math.min(n, total - 1));
+    deck.style.transform = 'translateX(-' + (current * 100) + 'vw)';
+    slides[current].classList.add('is-active');
+    dotsNav.children[current].classList.add('is-active');
+    counter.textContent =
+      String(current + 1).padStart(2, '0') + ' / ' +
+      String(total).padStart(2, '0');
+  }
+
+  goTo(0);
+
+  /* keyboard */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ')
+      { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp')
+      { e.preventDefault(); goTo(current - 1); }
+  });
+
+  /* touch swipe */
+  let tx = 0;
+  deck.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  deck.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
